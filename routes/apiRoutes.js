@@ -1,8 +1,9 @@
-const app = require("express").app();
+const app = require("express");
 //connection to models
 const db = require("../models");
-
+const router = require("express").Router();
 //lastest workout data
+router.get("/", (req, res))
 app.get("/api/workout",(req,res)=>{
 db.Workout.find({}).sort({ day: -1})
     .then(dbWorkout =>{

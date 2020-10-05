@@ -14,7 +14,7 @@ mongoose.connect(process.env.MONGODB_ATLAS_URI || "mongodb://localhost/workout",
   useFindAndModify: false });
 
 require("./routes/htmlRoutes")(app);
-require("./routes/api-routes")(app);
+require("./routes/apiRoutes")(app);
 
 app.listen(PORT, () => {
   console.log(`App running on link http://localhost:${PORT}`);
