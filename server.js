@@ -1,102 +1,21 @@
-// const express = require("express");
-const mongojs = require("mongojs");
+  
+const express = require("express");
 const logger = require("morgan");
-
-const databaseUrl = "workout";
-const collections = ["exercises"];
-const db = mongojs(databaseUrl, collections);
+const mongoose = require("mongoose");
+const PORT = process.env.PORT || 3000;
 
 const app = express();
-
-app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
+// setting connection to mangooes in local or on server 
+mongoose.connect(process.env.MONGODB_ATLAS_URI || "mongodb://localhost/workout",
+ { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true,
+  useFindAndModify: false });
 
-db.on("error", error => {
-  console.log("Database Error:", error);
-});
+require("./routes/htmlRoutes")(app);
+require("./routes/api-routes")(app);
 
-app.post("/submit", ({ body }, res) => {
-  const exercise = body;
-
-  exercise.complete = false;
-
-  db.exercises.save(exercise, (error, saved) => {
-    if (error) {
-      console.log(error);
-    } else {
-      res.send(saved);
-    }
-  });
-});
-
-app.get("/complete", (req, res) => {
-  db.exercises.find({ complete: true }, (error, found) => {
-    if (error) {
-      console.log(error);
-    } else {
-      res.json(found);
-    }
-  });
-});
-
-app.get("/incomplete", (req, res) => {
-  db.exercises.find({ complete: false }, (error, found) => {
-    if (error) {
-      console.log(error);
-    } else {
-      res.json(found);
-    }
-  });
-});
-
-app.put("/markcomplete/:id", ({ params }, res) => {
-  db.exercises.update(
-    {
-      _id: mongojs.ObjectId(params.id)
-    },
-    {
-      $set: {
-        complete: true
-      }
-    },
-
-    (error, edited) => {
-      if (error) {
-        console.log(error);
-        res.send(error);
-      } else {
-        console.log(edited);
-        res.send(edited);
-      }
-    }
-  );
-});
-
-app.put("/markincomplete/:id", ({ params }, res) => {
-  db.exercises.update(
-    {
-      _id: mongojs.ObjectId(params.id)
-    },
-    {
-      $set: {
-        complete: false
-      }
-    },
-
-    (error, edited) => {
-      if (error) {
-        console.log(error);
-        res.send(error);
-      } else {
-        console.log(edited);
-        res.send(edited);
-      }
-    }
-  );
-});
-
-app.listen(3000, () => {
-  console.log("App running on port 3000!");
+app.listen(PORT, () => {
+  console.log(`App running on link http://localhost:${PORT}`);
 });
