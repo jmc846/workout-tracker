@@ -1,40 +1,63 @@
-const app = require("express");
 //connection to models
-const db = require("../models");
+const Workout = require("../models/workout.js");
 const router = require("express").Router();
 //lastest workout data
-router.get("/", (req, res))
-app.get("/api/workout",(req,res)=>{
-db.Workout.find({}).sort({ day: -1})
-    .then(dbWorkout =>{
-     res.json(dbWorkout);
+
+router.get("/api/workouts", (req, res) => {
+  Workout.find()
+    // .sort({ day: -1 })
+    .then((dbWorkouts) => {
+      res.json(dbWorkouts);
     })
-    .catch(err =>{
+    .catch((err) => {
       res.json(err);
     });
 });
+
 //adding excercises
-app.put("api/workouts/:id", (req, res) =>{
-let urlData = req.params;
-let workoutData = req.body;
+router.put("/api/workouts/:id", ({ body, params }, res) => {
+  Workout.findByIdAndUpdate(
+    params.id,
+    { $push: { exercises: body } },
+    { new: true, runValidators: true }
+  )
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 
-db.Workout.updateOne({_id: urlData.id},{
-$push:{
-  exercises:[
-    {
-     "type": workoutData.type,
-     "name": workoutData.name,
-     "duration": workoutData.duration,
-     "distance": workoutData.distance,
-     "weight": workoutData.weight,
-     "reps": workoutData.reps,
-     "sets": workoutData.sets
-    }
+router.post("/api/workouts", (req, res) => {
+  Workout.create({})
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
 
-  ]
-}
+router.delete("/api/workouts", (req, res) => {
+  let workoutid = req.body.id;
+  Workout.findByIdAndDelete(workoutid)
+    .then(() => {
+      res.json(true);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
 
+router.get("/api/workouts/range", (req, res) =>{
+  Workout.find({}).limit(7)
+  .then(dbWorkout => {
+    res.json(dbWorkout);
+  })
+  .catch((err) => {
+    res.json(err);
+  });
 })
 
-  
-})
+module.exports = router;

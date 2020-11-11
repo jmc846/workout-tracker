@@ -1,20 +1,19 @@
-  
+const router = require("express").Router();
 const path = require("path");
-module.exports = function (app) {
 
-    // getting startup page
-    app.get("/", (req, res) => {
-        res.sendFile(path.join(__dirname, "../public/index.html"));
-    });
+// // getting startup page
+// router.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "./public/index.html"));
+// });
 
-    // calling the exercise input page
-    app.get("/exercise", (req, res) => {
-        res.sendFile(path.join(__dirname, "../public/exercise.html"));
-    });
+// calling the exercise input page
+router.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/exercise.html"));
+});
 
-    // getting dashboard with  stats 
-    app.get("/stats", (req, res) => {
-        res.sendFile(path.join(__dirname, "../public/stats.html"));
-    });
+// getting dashboard with  stats
+router.get("/stats", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/stats.html"));
+});
 
-};
+module.exports = router;
