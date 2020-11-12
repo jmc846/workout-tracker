@@ -15,7 +15,7 @@ app.use(express.static("public"));
 
 // setting connection to mongooes in local or on server
 mongoose.connect(
-   "mongodb://localhost/workout",
+   "mongodb://localhost:27017/workoutdb",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

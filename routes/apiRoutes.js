@@ -1,13 +1,13 @@
 //connection to models
-const Workout = require("../models/workout.js");
 const router = require("express").Router();
+const Workout = require("../models/workout.js");
 //lastest workout data
 
 router.get("/api/workouts", (req, res) => {
   Workout.find()
     // .sort({ day: -1 })
-    .then((dbWorkouts) => {
-      res.json(dbWorkouts);
+    .then(dbWorkout => {
+      res.json(dbWorkout);
     })
     .catch((err) => {
       res.json(err);
@@ -30,12 +30,12 @@ router.put("/api/workouts/:id", ({ body, params }, res) => {
 });
 
 router.post("/api/workouts", (req, res) => {
-  Workout.create({})
+  Workout.create(req.body)
     .then(dbWorkout => {
       res.json(dbWorkout);
     })
     .catch((err) => {
-      res.json(err);
+      res.status(401).json(err);
     });
 });
 
